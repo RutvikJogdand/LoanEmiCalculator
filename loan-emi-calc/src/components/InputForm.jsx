@@ -62,6 +62,7 @@ function InputForm()
 
     const handleCalculate = () => {
 
+        console.log(loanAmt,loanTenure,intRate)
         if(loanAmt)
         {
             if(loanTenure)
@@ -97,7 +98,7 @@ function InputForm()
 
     }
     return(
-        <>
+        <div className={styles.mainContainer}>
             <h4 style={{color:'#293A64'}} className="mt-2">Loan EMI Calculator</h4>
             <div className={styles.container}>
                 <div className={styles.inputFields}>
@@ -185,14 +186,16 @@ function InputForm()
 
                 }
             </div>
-
             {
                 emi && totalPayable && totalInterest ?
+                <>
+                <hr/>
                 <OutputForm emi={emi} totalPayable={totalPayable} totalInterest={totalInterest} />
+                </>
                 :
                 ""
             }
-        </>
+        </div>
     )
 }
 export default InputForm

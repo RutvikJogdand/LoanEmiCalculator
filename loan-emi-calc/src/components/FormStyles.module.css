@@ -3,6 +3,10 @@
     flex-wrap: wrap;
 }
 
+.mainContainer{
+    padding: 2% 10px;
+}
+
 .inputFields{
     min-width: 250px;
 }
