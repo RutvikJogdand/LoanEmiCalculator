@@ -62,7 +62,6 @@ function InputForm()
 
     const handleCalculate = () => {
 
-        console.log(loanAmt,loanTenure,intRate)
         if(loanAmt)
         {
             if(loanTenure)
