@@ -1,0 +1,45 @@
+.inputFields, .OutputFormContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.inputFields{
+    min-width: 250px;
+}
+
+.container{
+    padding: 2% 20%;
+}
+
+.inputFields > input{
+    flex: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.OutputFormContainer{
+    padding: 2% 10%;
+    flex-wrap: wrap;
+}
+
+.OutputFormContainer > div{
+    padding: 5px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    min-width: 200px
+}
+
+.OutputFormContainer >:first-child{
+    flex: 1;
+    background-color: #FFE8A7
+}
+
+.OutputFormContainer >:nth-child(2){
+    flex: 2;
+    background-color: #E3FFFD;
+}
+
+.OutputFormContainer >:nth-child(3){
+    flex: 3;
+    background-color: #DFE7FF;
+}

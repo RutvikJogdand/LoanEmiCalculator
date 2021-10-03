@@ -1,10 +1,17 @@
 import React, { useState } from "react"
+import styles from "./FormStyles.module.css"
+import OutputForm from "./OutputForm"
 
 function InputForm()
 {
     const [loanAmt, setLoanAmt] = useState("")
     const [loanTenure, setLoanTenure] = useState("")
     const [intRate, setIntRate] = useState("")
+
+    // Calculated fields:
+    const [emi, setEmi] = useState("")
+    const [totalPayable, setTotalPayable] = useState("")
+    const [totalInterest, setTotalInterest] = useState("")
 
     // Flags;
     const [loanAmtFlag, setLoanAmtFlag] = useState(false)
@@ -36,9 +43,21 @@ function InputForm()
     }
 
     const calcEmi = (amt, tenure, rate) => {
-        let actualRate = (Number(rate)/12)*100
+        let actualRate = (Number(rate)/12)/100
 
-        console.log(actualRate)
+        let powTerm = Math.pow((1 + actualRate),tenure)
+
+        let fractionalPart = powTerm/( powTerm - 1)
+
+        let EMI = Math.round(amt * actualRate * fractionalPart) //Total EMI
+
+        let totalPayable = EMI * tenure
+
+        let totalInterest = totalPayable - amt
+        
+        setEmi(EMI)
+        setTotalPayable(totalPayable)
+        setTotalInterest(totalInterest)
     }
 
     const handleCalculate = () => {
@@ -66,24 +85,76 @@ function InputForm()
             setLoanAmtFlag(true)
         }
     }
+
+    const handleReset = () => {
+        setLoanAmt("")
+        setLoanTenure("")
+        setIntRate("")
+
+        setEmi("")
+        setTotalPayable("")
+        setTotalInterest("")
+
+    }
     return(
         <>
             <h4>Loan EMI Calculator</h4>
-            <div>
-                <span> Loan Amount </span>
-                <input type="number" name="loanAmt"  pattern="[0-9]" placeholder="Enter amount" value={loanAmt} onChange={handleLoanAmt}/>
-                <span> INR </span>
+            <div className={styles.container}>
+                <div className={styles.inputFields}>
+                    <div> Loan Amount </div>
+                    {
+                         emi && totalPayable && totalInterest ?
+                         <input value={loanAmt} className="form-control" />
+                         :
+                         <input className="form-control" type="number" name="loanAmt"  pattern="[0-9]" placeholder="Enter amount" value={loanAmt} onChange={handleLoanAmt}/>
+
+                    }
+                    <div> INR </div>
+                </div>
+                {
+                    loanAmtFlag&&
+                    <div className="mt-2">
+                        <div className="alert alert-danger d-flex align-items-center" role="alert">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                            <div>
+                                Please enter the loan amount.
+                            </div>
+                        </div>
+                    </div>
+                }
                 <br/>
-                <span> Loan Tenure </span>
-                <input type="number" name="loanTenure" placeholder="Enter months" value={loanTenure} onChange={handleLoanTenure}/>
-                <span> Months </span>
+
+                <div className={styles.inputFields}>
+                    <div> Loan Tenure </div>
+                    <input className="form-control" type="number" name="loanTenure" placeholder="Enter months" value={loanTenure} onChange={handleLoanTenure}/>
+                    <div> Months </div>
+                </div>
                 <br/>
-                <span> Interest Rate </span>
-                <input type="number" name="intRate" step=".01" pattern="^\d*(\.\d{0,2})?$" placeholder="NN.NN" value={intRate} onChange={handleIntRate}/>
-                <span> % </span>
+
+                <div className={styles.inputFields}>
+                    <div> Interest Rate </div>
+                    <input className="form-control" type="number" name="intRate" step=".01" pattern="^\d*(\.\d{0,2})?$" placeholder="NN.NN" value={intRate} onChange={handleIntRate}/>
+                    <div> % </div>
+                </div>
                 <br/>
-                <button onClick={handleCalculate}>Calculate</button>
+                
+                {
+                    emi && totalPayable && totalInterest ?
+                    <button className onClick={handleReset}>Reset</button>
+                    :
+                    <button onClick={handleCalculate}>Calculate</button>
+
+                }
             </div>
+
+            {
+                emi && totalPayable && totalInterest ?
+                <OutputForm emi={emi} totalPayable={totalPayable} totalInterest={totalInterest} />
+                :
+                ""
+            }
         </>
     )
 }
